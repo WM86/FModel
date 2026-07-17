@@ -3,17 +3,20 @@ name: FModel Builder
 on:
   workflow_dispatch:
     inputs:
-        appVersion:
-          description: 'FModel Version And Release Tag'
-          required: true
-          default: '4.0.X.X'
+      appVersion:
+        description: 'FModel Version And Release Tag'
+        required: true
+        default: '4.0.X.X'
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: GIT Checkout
+      - name: Checkout
         uses: actions/checkout@v6
         with:
           submodules: 'true'
@@ -21,28 +24,24 @@ jobs:
       - name: Fetch Submodules Recursively
         run: git submodule update --init --recursive
 
-      - name: .NET 10 Setup
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 
-      - name: .NET Restore
+      - name: Restore
         run: dotnet restore FModel
 
-      - name: .NET Publish
-        run: dotnet publish FModel -c Release --no-self-contained -r win-x64 -f net10.0-windows -o "./FModel/bin/Publish/" -p:PublishReadyToRun=false -p:PublishSingleFile=true -p:DebugType=None -p:GenerateDocumentationFile=false -p:DebugSymbols=false -p:AssemblyVersion=${{ github.event.inputs.appVersion }} -p:FileVersion=${{ github.event.inputs.appVersion }}
+      - name: Publish
+        run: dotnet publish FModel -c Release --no-self-contained -r win-x64 -f net10.0-windows -o "./publish/" -p:PublishReadyToRun=false -p:PublishSingleFile=true -p:DebugType=None -p:GenerateDocumentationFile=false -p:DebugSymbols=false -p:AssemblyVersion=${{ github.event.inputs.appVersion }} -p:FileVersion=${{ github.event.inputs.appVersion }}
 
-      - name: ZIP File
-        uses: papeloto/action-zip@v1.2
-        with:
-          files: ./FModel/bin/Publish/FModel.exe
-          dest: FModel.zip # will end up in working directory not the Publish folder
+      - name: Zip
+        run: Compress-Archive -Path ./publish/FModel.exe -DestinationPath FModel.zip
 
-      - name: GIT Release
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          title: "FModel v${{ github.event.inputs.appVersion }}"
-          automatic_release_tag: ${{ github.event.inputs.appVersion }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          name: "FModel v${{ github.event.inputs.appVersion }}"
+          tag_name: ${{ github.event.inputs.appVersion }}
           prerelease: false
           files: FModel.zip
