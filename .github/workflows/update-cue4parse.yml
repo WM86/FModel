@@ -1,0 +1,59 @@
+name: Update CUE4Parse Submodule
+
+on:
+  schedule:
+    # Daily check at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          ref: dev
+
+      - name: Check CUE4Parse upstream
+        id: cue4parse
+        run: |
+          cd CUE4Parse
+          git fetch origin master
+          LATEST=$(git rev-parse origin/master)
+          CURRENT=$(git rev-parse HEAD)
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update submodule reference
+        if: steps.cue4parse.outputs.changed == 'true'
+        run: |
+          cd CUE4Parse
+          git checkout ${{ steps.cue4parse.outputs.latest }}
+
+      - name: Create Pull Request
+        if: steps.cue4parse.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update CUE4Parse submodule to ${{ steps.cue4parse.outputs.latest }}"
+          branch: auto-update/cue4parse
+          base: dev
+          title: "Update CUE4Parse submodule to latest master"
+          body: |
+            Automated update of CUE4Parse submodule to latest [master](https://github.com/FabianFG/CUE4Parse/commits/master/).
+
+            New commit: `${{ steps.cue4parse.outputs.latest }}`
+          delete-branch: true
