@@ -221,18 +221,18 @@ public class ExportOptionsViewModel : ViewModel
     }
 
     public ExportOptions BuildOptions() => new(
-        SelectedMeshFormat,
-        SelectedNaniteMeshFormat,
-        SelectedMeshQuality,
-        SelectedTexturePlatform,
-        SelectedTextureFormat,
-        TextureQuality,
-        ExportHdrTexturesAsHdr,
-        SelectedMaterialDepth,
-        ExportMaterials,
-        ExportMorphTargets,
-        SelectedSocketFormat,
-        SelectedCompressionFormat,
-        ExportAllTextureMips
+        meshFormat: SelectedMeshFormat,
+        naniteMeshFormat: SelectedNaniteMeshFormat,
+        meshQuality: SelectedMeshQuality,
+        texturePlatform: SelectedTexturePlatform,
+        textureFormat: SelectedTextureFormat,
+        textureQuality: TextureQuality,
+        exportHdrTexturesAsHdr: ExportHdrTexturesAsHdr,
+        exportAllTextureMips: ExportAllTextureMips,
+        materialDepth: SelectedMaterialDepth,
+        exportMaterials: ExportMaterials,
+        exportMorphTargets: ExportMorphTargets,
+        socketFormat: SelectedSocketFormat,
+        compressionFormat: SelectedCompressionFormat
     );
 }

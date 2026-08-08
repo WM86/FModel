@@ -57,19 +57,19 @@ public sealed class UserSettings : ViewModel
     public static ExportOptions GetExportOptions()
     {
         return new ExportOptions(
-            Default.MeshExportFormat,
-            Default.NaniteMeshExportFormat,
-            Default.MeshQuality,
-            Default.CurrentDir.TexturePlatform,
-            Default.TextureExportFormat,
-            Default.TextureQuality,
-            Default.SaveHdrTexturesAsHdr,
-            Default.MaterialExportFormat,
-            Default.SaveEmbeddedMaterials,
-            Default.SaveMorphTargets,
-            Default.SocketExportFormat,
-            Default.CompressionFormat,
-            Default.ExportAllTextureMips
+            meshFormat: Default.MeshExportFormat,
+            naniteMeshFormat: Default.NaniteMeshExportFormat,
+            meshQuality: Default.MeshQuality,
+            texturePlatform: Default.CurrentDir.TexturePlatform,
+            textureFormat: Default.TextureExportFormat,
+            textureQuality: Default.TextureQuality,
+            exportHdrTexturesAsHdr: Default.SaveHdrTexturesAsHdr,
+            exportAllTextureMips: Default.ExportAllTextureMips,
+            materialDepth: Default.MaterialExportFormat,
+            exportMaterials: Default.SaveEmbeddedMaterials,
+            exportMorphTargets: Default.SaveMorphTargets,
+            socketFormat: Default.SocketExportFormat,
+            compressionFormat: Default.CompressionFormat
         );
     }
 
