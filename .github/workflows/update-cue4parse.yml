@@ -56,4 +56,4 @@ jobs:
         if: steps.cue4parse.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run "FModel QA Builder" --repo ${{ github.repository }} --ref dev
+        run: gh workflow run "Daily Builder" --repo ${{ github.repository }} --ref dev
