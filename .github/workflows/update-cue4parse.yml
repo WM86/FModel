@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   update:
@@ -50,3 +51,9 @@ jobs:
           git add CUE4Parse
           git commit -m "同步 CUE4Parse 子模块至 ${{ steps.cue4parse.outputs.latest }}"
           git push origin dev
+
+      - name: Trigger QA Builder
+        if: steps.cue4parse.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run "FModel QA Builder" --repo ${{ github.repository }} --ref dev
