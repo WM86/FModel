@@ -32,6 +32,13 @@ jobs:
           filename: ${{ github.sha }}.zip # will end up in working directory not the Publish folder
           path: ./FModel/bin/Publish/FModel.exe
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FModel-QA
+          path: ${{ github.sha }}.zip
+          if-no-files-found: error
+
       - name: Edit QA Artifact
         uses: ncipollo/release-action@v1.20.0
         with:
